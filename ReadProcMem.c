@@ -8,7 +8,7 @@ int main()
     FILE *file = fopen("/proc/meminfo", "r");
     if (file == NULL) {
         printf("Failed to open memory info");
-        return 0; //return to indicate failure
+        return 1; //return to indicate failure
     }
 
     else
@@ -20,5 +20,5 @@ int main()
         }
     }
     fclose(file);
-    return 1; //return to indicate success
+    return 0; //return to indicate success
 }

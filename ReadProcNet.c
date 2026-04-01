@@ -5,29 +5,30 @@
 
 typedef struct ReceivedData {
     char networkName[20]; 
-    int bytes;
-    int packets;
-    int errs;
-    int drop;
-    int fifo;
-    int frame;
-    int compressed;
-    int multicast;
+    unsigned long long bytes;
+    unsigned long long packets;
+    unsigned long long errs;
+    unsigned long long drop;
+    unsigned long long fifo;
+    unsigned long long frame;
+    unsigned long long compressed;
+    unsigned long long multicast;
 
 }Receive; 
 
 typedef struct TransmittedData {
     char networkName[20]; 
-    int bytes;
-    int packets;
-    int errs;
-    int drop;
-    int fifo;
-    int colls;
-    int carrier;
-    int compressed;
+    unsigned long long bytes;
+    unsigned long long packets;
+    unsigned long long errs;
+    unsigned long long drop;
+    unsigned long long fifo;
+    unsigned long long colls;
+    unsigned long long carrier;
+    unsigned long long compressed;
 }Transmit;
 
+void initNetworkData(Transmit *TRANSMIT, Receive *RECEIVE, char line[500]); 
 
 
 int main() 
@@ -39,14 +40,13 @@ int main()
     if (file == NULL) 
     {
         printf("Failed to open network interface info");
-        return 0; //return to indicate failure
+        return 1; //return to indicate failure
     }
 
-    else
-    {
+   
     char buffer[500];
-    char line[500];
-        int i = 0; 
+    char line[500]; 
+    int i = 0; 
         while(fgets(buffer, sizeof(buffer), file)) 
         {
             if (i == 2) 
@@ -58,94 +58,88 @@ int main()
 
         fgets(line, sizeof(line), file); // Read line of the network interface info
         printf("%s", line); 
-        
-        char *token = strtok(line, " "); 
 
-        //Recieve 
-        for(int i = 0; token != NULL; i++) 
-        {
-            if (i == 0) 
-            {
-                strcpy(receive.networkName, token);
-            }
-            if (i == 1) 
-            {
-                receive.bytes = atoi(token);
-            }
-            if (i == 2) 
-            {   
-                receive.packets = atoi(token);
-            }
-            if (i == 3) 
-            {
-                receive.errs = atoi(token);
-            }
-            if (i == 4) 
-            {
-                receive.drop = atoi(token);
-            }
-            if (i == 5) 
-            {
-                receive.fifo = atoi(token);
-            }
-            if (i == 6) 
-            {
-                receive.frame = atoi(token);
-            }
-            if (i == 7) 
-            {
-                receive.compressed = atoi(token);
-            }
-            if (i == 8) 
-            {
-                receive.multicast = atoi(token);
-            }   
-            token = strtok(NULL, " ");
-        }
+        //Recieve & Transmit 
+        initNetworkData(&transmit, &receive, line); 
 
-        //Transmit
-         strcpy(transmit.networkName, receive.networkName);
-        for(int j = 0; token != NULL; j++)
+        printf("Network Interface: %s\n", receive.networkName);
+        printf("Received: %llu bytes, %llu drop\n", receive.bytes, receive.drop); 
+        printf("Transmitted: %llu bytes, %llu drop\n", transmit.bytes, transmit.drop);
+    
+    fclose(file);
+    return 0; //return to indicate success
+}
+
+void initNetworkData(Transmit *TRANSMIT, Receive *RECEIVE, char line[500]) 
+{
+    char *token = strtok(line, " :\t\n"); 
+
+    for(int j = 0; token != NULL; j++)
         {
             if (j == 0) 
             {
-               transmit.bytes = atoi(token);
+               strcpy(RECEIVE->networkName, token);
+               strcpy(TRANSMIT->networkName, token);
             }
             if (j == 1) 
             {
-                transmit.packets = atoi(token);
+                RECEIVE->bytes = strtoull(token, NULL, 10); // Convert string to unsigned long long. Prevent overflow since the number of bytes can be very large.
             }
             if (j == 2) 
             {   
-                transmit.errs = atoi(token);
+                RECEIVE->packets = strtoull(token, NULL, 10);
             }
             if (j == 3) 
             {   
-                transmit.drop = atoi(token);
+                RECEIVE->errs = strtoull(token, NULL, 10);
             }
             if (j == 4) 
             {
-                transmit.fifo = atoi(token);
+                RECEIVE->drop = strtoull(token, NULL, 10);
             }
             if (j == 5) 
             {
-                transmit.colls = atoi(token);
+                RECEIVE->fifo = strtoull(token, NULL, 10);
             }
             if (j == 6) 
             {
-                transmit.carrier = atoi(token);
+                RECEIVE->frame = strtoull(token, NULL, 10);
             }
             if (j == 7) 
             {
-                transmit.compressed = atoi(token);
+                RECEIVE->compressed = strtoull(token, NULL, 10);
             }
-            token = strtok(NULL, " ");
-        }
+            if (j == 8) 
+            {
+                RECEIVE->multicast = strtoull(token, NULL, 10);
+            }
+            if (j == 9) 
+            {
+                TRANSMIT->bytes = strtoull(token, NULL, 10);
+            }
+            if (j == 10) 
+            {TRANSMIT->packets = strtoull(token, NULL, 10);
+            }
+            if (j == 11) 
+            {TRANSMIT->errs = strtoull(token, NULL, 10);
+            }
+            if (j == 12) 
+            {TRANSMIT->drop = strtoull(token, NULL, 10);
+            }
+            if (j == 13) 
+            {TRANSMIT->fifo = strtoull(token, NULL, 10);
+            }
+            if (j == 14) 
+            {TRANSMIT->colls = strtoull(token, NULL, 10);
+            }
+            if (j == 15) 
+            {TRANSMIT->carrier = strtoull(token, NULL, 10);
+            }
+            if (j == 16) 
+            {TRANSMIT->compressed = strtoull(token, NULL, 10);
+            }
 
-        printf("Network Interface: %s\n", receive.networkName);
-        printf("Received: %d bytes,%d drop\n", receive.bytes, receive.drop); 
-        printf("Transmitted: %d bytes, %d drop\n", transmit.bytes, transmit.drop);
-    }
-    fclose(file);
-    return 1; //return to indicate success
+            token = strtok(NULL, " :\t\n");
+        
+        }
 }
