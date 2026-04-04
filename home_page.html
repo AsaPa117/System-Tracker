@@ -2,7 +2,7 @@
 <style> 
    @font-face{
    font-family: 'GreenScreenFont'; 
-    src: url('./perfect-dos-vga-437-cdnfonts/Perfect_DOS_VGA_437.ttf') format('truetype');
+    src: url('./perfect-dos-vga-437-cdnfonts/Perfect_DOS_VGA_437.ttf');
    }
 
 body{
@@ -20,6 +20,12 @@ body{
 
 <h2> CPU:</h2>
 <canvas> id= "bar" class="bar_graph" width="1000" height = "700"</canvas>
+<script> 
+   const canvas = document.getElementById("bar")
+   const ctx = canvas.getAttribute("2d"); 
+
+</script>
+
 
 <h2>MEMORY:</h2>
 <canvas> id= "plot" class="plot_graph" width="2000" height = "2000" </canvas>
