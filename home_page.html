@@ -1,18 +1,29 @@
+<!--Everyting under <style> is css-->
 <style> 
- button{
-    background-color: black;
-    color: white;
+   @font-face{
+   font-family: 'GreenScreenFont'; 
+    src: url('./perfect-dos-vga-437-cdnfonts/Perfect_DOS_VGA_437.ttf') format('truetype');
+   }
+
+body{
+    background-color: green;
+    color:greenyellow;
     border: none; 
- }
+}
 </style>
 
-<canvas> 
- 
-</canvas>
-<h1>System Tracker</h1>
+<p>
+   1
+</p>
 
-<h2>CPU:</h2>
+<h1>HEADING:</h1>
 
-<h2>MEMORY</h2>
+<h2> CPU:</h2>
+<canvas> id= "bar" class="bar_graph" width="1000" height = "700"</canvas>
 
-<h2>NETWORK_STAT</h2>
+<h2>MEMORY:</h2>
+<canvas> id= "plot" class="plot_graph" width="2000" height = "2000" </canvas>
+
+<h2>NETWORK_STAT:</h2>
+<canvas> id= "pi" class="pi_graph" width= "1000" height = "1000</canvas>
+
