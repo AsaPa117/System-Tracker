@@ -30,10 +30,26 @@ function drawEmptyBar(id){
    ctx.strokeRect(1, 1, canvas.width-2, canvas.height-2); 
 }
 
-function displayNum(num){
-   document.getElementById("displayNum").textContent = num + "%";
+function displayNum(id, num){
+   document.getElementById(id).textContent = num + "%";
 }
 
+function drawPieChart(id, percentage){
+   const canvas = document.getElementById(id); 
+   const ctx = canvas.getContext("2d"); 
+   
+    ctx.beginPath(); 
+    ctx.arc(canvas.width/2, canvas.height/2, 100, 0, 2 * Math.PI); 
+    ctx.strokeStyle = "rgb(102, 255, 102)"; 
+    ctx.stroke(); 
+
+    ctx.beginPath(); 
+    ctx.moveTo(canvas.width/2, canvas.height/2); 
+    ctx.arc(canvas.width/2, canvas.height/2, 100, -Math.PI/2, -Math.PI/2 + (percentage/100) * 2 * Math.PI);
+    ctx.closePath();
+    ctx.fillStyle = "rgb(102, 255, 102)"; 
+    ctx.fill();  
+}
 </script>
 
 
@@ -54,7 +70,7 @@ function displayNum(num){
       <canvas id= "bar8" width= 27 height= 25></canvas>
       <canvas id= "bar9" width= 27 height= 25></canvas>
       <canvas id= "bar10" width= 27 height= 25></canvas>
-      <span id="displayNum"></span>
+      <span id="display_cpu"></span>
       <script>
          const CPU = 50
          const total = 10; 
@@ -75,9 +91,17 @@ function displayNum(num){
                drawEmptyBar(id); 
             }
          }
-         displayNum(CPU);
+         displayNum("display_cpu", CPU);
       </script>
+
       <h2>Memory:</h2>
+      <canvas id= "piChart" width = "200" height = "200"></canvas>
+      <span id="display_memory_used"></span>
+      <script> 
+         memory_used = 76; 
+         drawPieChart("piChart", memory_used); 
+         displayNum("display_memory_used", memory_used)
+      </script>
 
       <h2>NETWORK_STAT:</h2>
 
@@ -85,7 +109,4 @@ function displayNum(num){
 </html>
 
 
-<h2>MEMORY:</h2>
-
-<h2>NETWORK_STAT:</h2>
 
