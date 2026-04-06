@@ -31,11 +31,8 @@ typedef struct TransmittedData {
 void initNetworkData(Transmit *TRANSMIT, Receive *RECEIVE, char line[500]); 
 
 
-int main() 
+int ReadProcNet(Receive *receive, Transmit *transmit) 
 {
-    Transmit transmit; 
-    Receive receive; 
-
     FILE *file = fopen("/proc/net/dev", "r");
     if (file == NULL) 
     {
@@ -57,18 +54,15 @@ int main()
         }
 
         fgets(line, sizeof(line), file); // Read line of the network interface info
-        printf("%s", line); 
+       // printf("%s", line); 
 
         //Recieve & Transmit 
-        initNetworkData(&transmit, &receive, line); 
+        initNetworkData(transmit, receive, line); 
 
-        printf("Network Interface: %s\n", receive.networkName);
-        printf("Received: %llu bytes, %llu drop\n", receive.bytes, receive.drop); 
-        printf("Transmitted: %llu bytes, %llu drop\n", transmit.bytes, transmit.drop);
-    
     fclose(file);
     return 0; //return to indicate success
 }
+
 
 void initNetworkData(Transmit *TRANSMIT, Receive *RECEIVE, char line[500]) 
 {

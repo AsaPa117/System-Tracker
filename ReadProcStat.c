@@ -20,7 +20,7 @@ typedef struct CPUData {
 
 void initCPUData(cpuData *CPU, FILE *file); 
 
-int main() 
+double ReadProcStat() 
 {
     cpuData cpu;
     cpuData cpuNext; 
@@ -36,9 +36,9 @@ int main()
     initCPUData(&cpu, file); 
     fclose(file);    
 
-    int idle0 = cpu.idle + cpu.iowait;
-    int nonIdle0 = cpu.user + cpu.nice + cpu.system + cpu.irq + cpu.softirq + cpu.steal;
-    int total0 = idle0 + nonIdle0;
+    unsigned long long idle0 = cpu.idle + cpu.iowait;
+    unsigned long long nonIdle0 = cpu.user + cpu.nice + cpu.system + cpu.irq + cpu.softirq + cpu.steal;
+    unsigned long long total0 = idle0 + nonIdle0;
 
     //Delay to read the next line of the stat info to get the next cpu usage data
     sleep(1);
@@ -52,18 +52,17 @@ int main()
     initCPUData(&cpuNext, fileNext); 
     fclose(fileNext);    
         
-    int idle1 = cpuNext.idle + cpuNext.iowait;
-    int nonIdle1 = cpuNext.user + cpuNext.nice + cpuNext.system + cpuNext.irq + cpuNext.softirq + cpuNext.steal;
-    int total1 = idle1 + nonIdle1;
+    unsigned long long idle1 = cpuNext.idle + cpuNext.iowait;
+    unsigned long long nonIdle1 = cpuNext.user + cpuNext.nice + cpuNext.system + cpuNext.irq + cpuNext.softirq + cpuNext.steal;
+    unsigned long long total1 = idle1 + nonIdle1;
 
-    int totald = total1 - total0;
-    int idled = idle1 - idle0;
+    unsigned long long totald = total1 - total0;
+    unsigned long long idled = idle1 - idle0;
 
     double Percentage = (double)(totald - idled) / totald * 100;
 
-    printf("CPU Usage: %.2f%%\n", Percentage);
-    
-    return 0; //return to indicate success
+   
+    return Percentage; //return to indicate success
 }
 
 void initCPUData(cpuData *CPU, FILE *file)
@@ -72,7 +71,7 @@ void initCPUData(cpuData *CPU, FILE *file)
     fgets(line, sizeof(line), file); // For now we'll read first line since it contains the overall cpu core usage
     //while (fgets(line, sizeof(line), file)) {} (We'll use it if we want to read each line for each cpu core usage)
 
-    printf("Initial Run: %s", line); // Print line of the stat info
+    //printf("Initial Run: %s", line); // Print line of the stat info
         
     // Since each field is raw data, we need to parse to determine CPU Usage. (Idle = idle + iowait) (nonIdle = user + nice + system + irq + softirq + steal) (total = idle + nonIdle)
     char *token = strtok(line, " "); 
