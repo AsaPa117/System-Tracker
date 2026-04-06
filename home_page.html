@@ -6,25 +6,75 @@
    }
 
 body{
-    background-color: green;
-    color:greenyellow;
+    font-family: 'GreenScreenFont';
+    font-size: 18px;
+    background-color: rgb(12, 12, 12);
+    color:rgb(102, 255, 102);
     border: none; 
 }
 </style>
 
-<p>
-   1
-</p>
+<html>
+   <head>
+   </head>
+   <body>
+      <h1>Task Manager</h1>
 
-<h1>HEADING:</h1>
+      <h2>CPU:</h2> 
+      <canvas id= "bar1" width= 25 height= 25></canvas>
+      <canvas id= "bar2" width= 25 height= 25></canvas>
+      <canvas id= "bar3" width= 25 height= 25></canvas>
+      <canvas id= "bar4" width= 25 height= 25></canvas>
+      <canvas id= "bar5" width= 25 height= 25></canvas>
+      <canvas id= "bar6" width= 25 height= 25></canvas>
+      <canvas id= "bar7" width= 25 height= 25></canvas>
+      <canvas id= "bar8" width= 25 height= 25></canvas>
+      <canvas id= "bar9" width= 25 height= 25></canvas>
+      <canvas id= "bar10" width= 25 height= 25></canvas>
+      <script>
+         const i = 0;
+         const remain = 0;  
+         const string = "bar"
+         if (i != 0){
+            for (;i < 0; i++){
+               id = string+i; 
+               drawFillBar(id); 
+            }
+         }
+         else (remain != 0)
+         {
+            for(; remain > 0; remain--)
+            {
+               id = string+1; 
+               drawEmptyBar(id); 
+            }
+         }
+      </script>
 
-<h2> CPU:</h2>
-<canvas> id= "bar" class="bar_graph" width="1000" height = "700"</canvas>
-<script> 
-   const canvas = document.getElementById("bar")
-   const ctx = canvas.getAttribute("2d"); 
+      <h2>Memory:</h2>
 
+      <h2>NETWORK_STAT:</h2>
+
+   </body>
+</html>
+
+<script>
+function drawFillBar(id){
+   const canvas = document.getElementbyID(id); 
+   const ctx = canvas.getContext("2d"); 
+   ctx.fillStyle = "rgb(102, 255, 102)"; 
+   ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function drawEmptyBar(id){
+   const canvas = document.getElementById(id); 
+   const ctx = canvas.getContext("2d"); 
+   ctx.strokeStyle = "rgb(102, 255, 102)"; 
+   ctx.lineWidth = 5; 
+   ctx.strokeRect(0, 25, canvas.width, canvas.height); 
+}
 </script>
+
 
 
 <h2>MEMORY:</h2>
