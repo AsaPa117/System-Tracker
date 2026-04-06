@@ -26,9 +26,14 @@ function drawEmptyBar(id){
    const canvas = document.getElementById(id); 
    const ctx = canvas.getContext("2d"); 
    ctx.strokeStyle = "rgb(102, 255, 102)"; 
-   ctx.lineWidth = 2; 
+   ctx.lineWidth = 3; 
    ctx.strokeRect(1, 1, canvas.width-2, canvas.height-2); 
 }
+
+function displayNum(num){
+   document.getElementById("displayNum").textContent = num + "%";
+}
+
 </script>
 
 
@@ -49,9 +54,11 @@ function drawEmptyBar(id){
       <canvas id= "bar8" width= 27 height= 25></canvas>
       <canvas id= "bar9" width= 27 height= 25></canvas>
       <canvas id= "bar10" width= 27 height= 25></canvas>
+      <span id="displayNum"></span>
       <script>
-         const total = 10
-         const filled = 5; //For now just make it five for test
+         const CPU = 50
+         const total = 10; 
+         const filled = CPU / 10; 
          const unfilled = total - filled;  
          const string = "bar"
          if (filled != 0){
@@ -68,8 +75,8 @@ function drawEmptyBar(id){
                drawEmptyBar(id); 
             }
          }
+         displayNum(CPU);
       </script>
-
       <h2>Memory:</h2>
 
       <h2>NETWORK_STAT:</h2>
