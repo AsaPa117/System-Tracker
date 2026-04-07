@@ -2,7 +2,7 @@
 <style> 
    @font-face{
    font-family: 'GreenScreenFont'; 
-    src: url('./perfect-dos-vga-437-cdnfonts/Perfect_DOS_VGA_437.ttf');
+    src: url('./share_techmono/Share-TechMono.ttf');
    }
 
 body{
@@ -30,12 +30,12 @@ function drawEmptyBar(id){
    ctx.strokeRect(1, 1, canvas.width-2, canvas.height-2); 
 }
 
-function displayNum(id, num){
+function displayPerc(id, num){
    document.getElementById(id).textContent = num + "%";
 }
 
 function drawPieChart(id, percentage){
-   const canvas = document.getElementById(id); 
+   const canvas = document.getElementById(id);  
    const ctx = canvas.getContext("2d"); 
    
     ctx.beginPath(); 
@@ -49,6 +49,22 @@ function drawPieChart(id, percentage){
     ctx.closePath();
     ctx.fillStyle = "rgb(102, 255, 102)"; 
     ctx.fill();  
+}
+
+function display_stat(id, type, num){
+   switch(type){
+      case "memory_used":
+         document.getElementById(id).textContent = "Memory Used: " + num; 
+         break;   
+      case "memory_available":
+         document.getElementById(id).textContent = "Memory Available: " + num;
+      case "network_recieved": 
+         document.getElementById(id).textContent = "Net Recieved: " + num; 
+         break; 
+      case "network_sent":
+         document.getElementById(id).textContent = "Net Sent: " + num;
+         break;
+   }
 }
 </script>
 
@@ -91,19 +107,35 @@ function drawPieChart(id, percentage){
                drawEmptyBar(id); 
             }
          }
-         displayNum("display_cpu", CPU);
+         displayPerc("display_cpu", CPU);
       </script>
 
       <h2>Memory:</h2>
-      <canvas id= "piChart" width = "200" height = "200"></canvas>
-      <span id="display_memory_used"></span>
+      <div style="display: flex; align-items: center; gap: 20px;">
+      <canvas id="piChart" width="200" height="200"></canvas>
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+         <span id="display_mem_used"></span>
+         <span id="display_mem_stat_used"></span>
+         <span id="display_mem__stat_avail"></span>
+      </div>
+      </div>
       <script> 
-         memory_used = 76; 
+         memory_used = 99; 
          drawPieChart("piChart", memory_used); 
-         displayNum("display_memory_used", memory_used)
+         displayPerc("display_mem_used", memory_used);
+         display_stat("display_mem_stat_used", "memory_used", 5);
+         display_stat("display_mem__stat_avail", "memory_available", 5); 
       </script>
 
       <h2>NETWORK_STAT:</h2>
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+      <span id="display_net_sent"></span>
+      <span id="display_net_rec"></span>
+      </div>
+   <script>
+      display_stat("display_net_sent", "network_sent", 5);
+      display_stat("display_net_rec", "network_recieved", 5);
+   </script>
 
    </body>
 </html>
