@@ -13,7 +13,7 @@
 #include <arpa/inet.h> // htons (converts port number to network byte order)
 
 int main() 
-{
+{    
     //Base on GeeksForGeeks  
      // SETUP (runs once)
     // 1. create socket file descriptor
@@ -51,8 +51,12 @@ int main()
         return 1;
     }
 
-     // READ/WRITE (runs repeatedly until client disconnects)
 
+    //(update) send http header once to client so it can accept the following data when sent
+    char http_header[] = "HTTP/1.1 200 OK\r\n" "Content-Type: application/json\r\n" "Access-Control-Allow-Origin: *\r\n" "\r\n";
+    send(client_server, http_header, strlen(http_header), 0);
+
+     // READ/WRITE (runs repeatedly until client disconnects)
     while(1)
     {
         char buffer[1024]; // Buffer to hold data to send to client
@@ -63,8 +67,7 @@ int main()
         ReadProcMem(&totMem, &memFree);
         ReadProcNet(&receive, &transmit);
 
-        sprintf(buffer, "{ \"cpu\": %.2f, \"mem_total\": %llu, \"mem_available\": %llu, \"net_recv\": %llu, \"net_sent\": %llu }\n",
-                cpu, totMem, memFree, receive.bytes, transmit.bytes);
+        sprintf(buffer, "{ \"cpu\": %.2f, \"mem_total\": %llu, \"mem_available\": %llu, \"net_recv\": %llu, \"net_sent\": %llu }\n", cpu, totMem, memFree, receive.bytes, transmit.bytes); //store data in buffer as a string
         if (send(client_server, buffer, strlen(buffer), 0) <= 0) 
         {
         printf("Client disconnected\n");
