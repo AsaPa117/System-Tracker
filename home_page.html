@@ -14,6 +14,21 @@ body{
 }
 </style>
 
+//
+<script>
+   function getStats_frm_server(){
+      const response = fetch("http://127.0.0.1:5555");
+      const raw_data =response.body.getReader(); // .body is the raw data but getReader holds the actualy bytes of data
+
+      const line = raw_data.read(); //Obtain the actual bytes
+      
+      while(true){
+         data = JSON.parse(line);
+      }
+
+   }
+</script>
+
 <script>
 function drawFillBar(id){
    const canvas = document.getElementById(id); 
