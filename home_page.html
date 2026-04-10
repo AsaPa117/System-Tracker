@@ -14,92 +14,6 @@ body{
 }
 </style>
 
-//
-<script>
-
-   const stats ={
-      cpu: 0, 
-      mem_total: 0, 
-      mem_available: 0, 
-      net_sent: 0, 
-      net_recieved: 0
-   }
-
-   async function getStats_frm_server(){
-      const response = await fetch("http://127.0.0.1:5555");
-      const raw_data = response.body.getReader(); // .body is the raw data but getReader holds the actualy bytes of data
-      
-      while(true){
-         const result = await raw_data.read(); //Obtain the actual bytes
-         const bytes = result.value; 
-         const line = new TextDecoder().decode(bytes) //convert bytes to string
-         const data = JSON.parse(line); //parse the data in the string as its own attributes. (Easier to access)
-
-         stats.cpu = data.cpu; 
-         stats.mem_available = data.mem_available; 
-         stats.mem_total = data.mem_total; 
-         stats.net_recieved = data.net_recieved; 
-         stats.net_sent = data.net_sent; 
-      }
-
-   }
-</script>
-
-<script>
-function drawFillBar(id){
-   const canvas = document.getElementById(id); 
-   const ctx = canvas.getContext("2d"); 
-   ctx.fillStyle = "rgb(102, 255, 102)"; 
-   ctx.fillRect(0, 0, canvas.width-2, canvas.height);
-}
-
-function drawEmptyBar(id){
-   const canvas = document.getElementById(id); 
-   const ctx = canvas.getContext("2d"); 
-   ctx.strokeStyle = "rgb(102, 255, 102)"; 
-   ctx.lineWidth = 3; 
-   ctx.strokeRect(1, 1, canvas.width-2, canvas.height-2); 
-}
-
-function displayPerc(id, num){
-   document.getElementById(id).textContent = num + "%";
-}
-
-function drawPieChart(id, percentage){
-   const canvas = document.getElementById(id);  
-   const ctx = canvas.getContext("2d"); 
-   
-    ctx.beginPath(); 
-    ctx.arc(canvas.width/2, canvas.height/2, 100, 0, 2 * Math.PI); 
-    ctx.strokeStyle = "rgb(102, 255, 102)"; 
-    ctx.stroke(); 
-
-    ctx.beginPath(); 
-    ctx.moveTo(canvas.width/2, canvas.height/2); 
-    ctx.arc(canvas.width/2, canvas.height/2, 100, -Math.PI/2, -Math.PI/2 + (percentage/100) * 2 * Math.PI);
-    ctx.closePath();
-    ctx.fillStyle = "rgb(102, 255, 102)"; 
-    ctx.fill();  
-}
-
-function display_stat(id, type, num){
-   switch(type){
-      case "memory_used":
-         document.getElementById(id).textContent = "Memory Used: " + num; 
-         break;   
-      case "memory_available":
-         document.getElementById(id).textContent = "Memory Available: " + num;
-      case "network_recieved": 
-         document.getElementById(id).textContent = "Net Recieved: " + num; 
-         break; 
-      case "network_sent":
-         document.getElementById(id).textContent = "Net Sent: " + num;
-         break;
-   }
-}
-</script>
-
-
 <html>
    <head>
    </head>
@@ -118,28 +32,6 @@ function display_stat(id, type, num){
       <canvas id= "bar9" width= 27 height= 25></canvas>
       <canvas id= "bar10" width= 27 height= 25></canvas>
       <span id="display_cpu"></span>
-      <script>
-         const CPU = 50
-         const total = 10; 
-         const filled = CPU / 10; 
-         const unfilled = total - filled;  
-         const string = "bar"
-         if (filled != 0){
-            for (i = 1;i <= filled; i++){
-               id = string+i; //parse "bar" with number 
-               drawFillBar(id); 
-            }
-         }
-         if (unfilled != 0)
-         {
-            for(x = filled + 1; x <= total; x++)
-            {
-               id = string+x; 
-               drawEmptyBar(id); 
-            }
-         }
-         displayPerc("display_cpu", CPU);
-      </script>
 
       <h2>Memory:</h2>
       <div style="display: flex; align-items: center; gap: 10px;">
@@ -150,26 +42,139 @@ function display_stat(id, type, num){
          <span id="display_mem__stat_avail"></span>
       </div>
       </div>
-      <script> 
-         memory_used = 99; 
-         drawPieChart("piChart", memory_used); 
-         displayPerc("display_mem_used", memory_used);
-         display_stat("display_mem_stat_used", "memory_used", 5);
-         display_stat("display_mem__stat_avail", "memory_available", 5); 
-      </script>
 
       <h2>NETWORK_STAT:</h2>
       <div style="display: flex; flex-direction: column; gap: 5px;">
       <span id="display_net_sent"></span>
       <span id="display_net_rec"></span>
       </div>
-   <script>
-      display_stat("display_net_sent", "network_sent", 5);
-      display_stat("display_net_rec", "network_recieved", 5);
-   </script>
+
+      <!-- script tags at the bottom so all canvas elements exist first -->
+
+      <script>
+         function drawFillBar(id){
+            const canvas = document.getElementById(id); 
+            const ctx = canvas.getContext("2d"); 
+            ctx.fillStyle = "rgb(102, 255, 102)"; 
+            ctx.fillRect(0, 0, canvas.width-2, canvas.height);
+         }
+
+         function drawEmptyBar(id){
+            const canvas = document.getElementById(id); 
+            const ctx = canvas.getContext("2d"); 
+            ctx.strokeStyle = "rgb(102, 255, 102)"; 
+            ctx.lineWidth = 3; 
+            ctx.strokeRect(1, 1, canvas.width-2, canvas.height-2); 
+         }
+
+         function displayPerc(id, num){
+            document.getElementById(id).textContent = num + "%";
+         }
+
+         function drawPieChart(id, percentage){
+            const canvas = document.getElementById(id);  
+            const ctx = canvas.getContext("2d"); 
+            
+            ctx.beginPath(); 
+            ctx.arc(canvas.width/2, canvas.height/2, 100, 0, 2 * Math.PI); 
+            ctx.strokeStyle = "rgb(102, 255, 102)"; 
+            ctx.stroke(); 
+
+            ctx.beginPath(); 
+            ctx.moveTo(canvas.width/2, canvas.height/2); 
+            ctx.arc(canvas.width/2, canvas.height/2, 100, -Math.PI/2, -Math.PI/2 + (percentage/100) * 2 * Math.PI);
+            ctx.closePath();
+            ctx.fillStyle = "rgb(102, 255, 102)"; 
+            ctx.fill();  
+         }
+
+         function display_stat(id, type, num){
+            switch(type){
+               case "memory_used":
+                  document.getElementById(id).textContent = "Memory Used: " + num; 
+                  break;   
+               case "memory_available":
+                  document.getElementById(id).textContent = "Memory Available: " + num;
+                  break;
+               case "network_recieved": 
+                  document.getElementById(id).textContent = "Net Recieved: " + num; 
+                  break; 
+               case "network_sent":
+                  document.getElementById(id).textContent = "Net Sent: " + num;
+                  break;
+            }
+         }
+      </script>
+
+      <script>
+         function updateDisplay(){
+            //CPU DISPLAY 
+            const total = 10; 
+            const filled = Math.round(stats.cpu / 10); 
+            const unfilled = total - filled;  
+            const string = "bar";
+            if (filled != 0){
+               for (let i = 1; i <= filled; i++){
+                  let id = string + i; //parse "bar" with number 
+                  drawFillBar(id); 
+               }
+            }
+            if (unfilled != 0){
+               for(let x = filled + 1; x <= total; x++){
+                  let id = string + x; 
+                  drawEmptyBar(id); 
+               }
+            }
+            displayPerc("display_cpu", stats.cpu);
+
+            //MEM DISPLAY
+            const memory_used = stats.mem_total - stats.mem_available; 
+            const mem_perc = Math.round((memory_used/stats.mem_total) * 100); 
+            const ctx = document.getElementById("piChart").getContext("2d");
+            ctx.clearRect(0, 0, 200, 200); // clear old pie chart before redrawing   
+
+            drawPieChart("piChart", mem_perc); 
+            displayPerc("display_mem_used", mem_perc);
+            display_stat("display_mem_stat_used", "memory_used", memory_used);
+            display_stat("display_mem__stat_avail", "memory_available", stats.mem_available); 
+
+            //Net DISPLAY
+            display_stat("display_net_sent", "network_sent", stats.net_sent);
+            display_stat("display_net_rec", "network_recieved", stats.net_recieved);
+         }
+      </script>
+
+      <script>
+         const stats = {
+            cpu: 0, 
+            mem_total: 0, 
+            mem_available: 0, 
+            net_sent: 0, 
+            net_recieved: 0
+         }
+
+         async function main(){
+            const response = await fetch("http://127.0.0.1:5555/stats"); //asking rquest from server and if approve fetch its data
+            const raw_data = response.body.getReader(); // .body is the raw data but getReader holds the actualy bytes of data
+            
+            while(true){
+               const recieved_data = await raw_data.read(); //Obtain the actual bytes
+               const message = recieved_data.value; 
+               const line = new TextDecoder().decode(message); //convert bytes to string
+               const data = JSON.parse(line); //parse line into data as its own attributes. (Easier to access)
+
+               stats.cpu = data.cpu; 
+               stats.mem_available = data.mem_available; 
+               stats.mem_total = data.mem_total; 
+               stats.net_recieved = data.net_recv; 
+               stats.net_sent = data.net_sent; 
+
+               updateDisplay(); 
+            }
+         }
+
+         main(); // start the program
+      </script>
 
    </body>
 </html>
-
-
-
