@@ -21,16 +21,18 @@ body{
       <h1>Task Manager</h1>
 
       <h2>CPU:</h2> 
-      <canvas id= "bar1" width= 27 height= 25></canvas>
-      <canvas id= "bar2" width= 27 height= 25></canvas>
-      <canvas id= "bar3" width= 27 height= 25></canvas>
-      <canvas id= "bar4" width= 27 height= 25></canvas>
-      <canvas id= "bar5" width= 27 height= 25></canvas>
-      <canvas id= "bar6" width= 27 height= 25></canvas>
-      <canvas id= "bar7" width= 27 height= 25></canvas>
-      <canvas id= "bar8" width= 27 height= 25></canvas>
-      <canvas id= "bar9" width= 27 height= 25></canvas>
-      <canvas id= "bar10" width= 27 height= 25></canvas>
+      <div id="cpu_bars" style="display: flex; gap: 4px;"></div>
+      <script>
+         //create 50 bars (canvas)
+         const container = document.getElementById("cpu_bars"); 
+         for (let i = 1; i <= 50; i++){
+            const canvas = document.createElement("canvas");
+            canvas.id = "bar" + i; 
+            canvas.width = 7; 
+            canvas.height = 15; 
+            container.appendChild(canvas); 
+         }
+      </script>
       <span id="display_cpu"></span>
 
       <h2>Memory:</h2>
@@ -63,7 +65,7 @@ body{
             const canvas = document.getElementById(id); 
             const ctx = canvas.getContext("2d"); 
             ctx.strokeStyle = "rgb(102, 255, 102)"; 
-            ctx.lineWidth = 3; 
+            ctx.lineWidth = 1; 
             ctx.strokeRect(1, 1, canvas.width-2, canvas.height-2); 
          }
 
@@ -109,8 +111,8 @@ body{
       <script>
          function updateDisplay(){
             //CPU DISPLAY 
-            const total = 10; 
-            const filled = Math.round(stats.cpu / 10); 
+            const total = 50; 
+            const filled = Math.round(stats.cpu / 2); 
             const unfilled = total - filled;  
             const string = "bar";
             if (filled != 0){
