@@ -115,6 +115,14 @@ body{
             const filled = Math.round(stats.cpu / 2); 
             const unfilled = total - filled;  
             const string = "bar";
+            
+            //clear all bar
+            for (let i=1; i <= total; i++){
+               const canvas = document.getElementById("bar" + i); 
+               const ctx = canvas.getContext("2d"); 
+               ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            }
+
             if (filled != 0){
                for (let i = 1; i <= filled; i++){
                   let id = string + i; //parse "bar" with number 
@@ -127,6 +135,7 @@ body{
                   drawEmptyBar(id); 
                }
             }
+
             displayPerc("display_cpu", stats.cpu);
 
             //MEM DISPLAY
