@@ -12,6 +12,7 @@ body{
     color:rgb(51, 255, 51);
     border: none; 
 }
+
 </style>
 
 <html>
@@ -19,6 +20,10 @@ body{
    </head>
    <body>
       <h1>Task Manager</h1>
+
+      <label for="client_select">SELECT_CLIENT: </label>
+      <select id="client_select"></select>
+      <div id="panels_container"></div>
 
       <h2>CPU:</h2> 
       <div id="cpu_bars" style="display: flex; gap: 4px;"></div>
@@ -51,7 +56,6 @@ body{
       <span id="display_net_rec"></span>
       </div>
 
-      <!-- script tags at the bottom so all canvas elements exist first -->
 
       <script>
          function drawFillBar(id){
@@ -156,6 +160,19 @@ body{
       </script>
 
       <script>
+         const clients = [{name: "Ahron PC", ip: "172.20.10.5"}, {name: "Ashton laptop", ip: "172.20.10.7"},];  //a list of clients
+      </script>
+
+      <script>
+         const select = document.getElementById("client_select");
+         for (let i = 0; i < clients.length; i++){
+            const option = document.createElement("option");
+            option.value = i;                      // 0 for Ahron, 1 for Ashton
+            option.textContent = clients[i].name;  // what the user sees
+         select.appendChild(option);
+}      </script>
+
+      <script>
          const stats = {
             cpu: 0, 
             mem_total: 0, 
@@ -164,8 +181,8 @@ body{
             net_recieved: 0
          }
 
-         async function main(){
-            const response = await fetch("http://127.0.0.1:5555/stats"); //asking rquest from server and if approve fetch its data
+         async function main(ip){
+            const response = await fetch("http://"+ip+":5555/stats"); //asking rquest from server of client device ip through server port 5555
             const raw_data = response.body.getReader(); // .body is the raw data but getReader holds the actualy bytes of data
             
             while(true){
@@ -184,8 +201,12 @@ body{
             }
          }
 
-         main(); // start the program
+      function onClientChange(){
+          main(clients[this.value].ip); 
+         }
+         select.addEventListener("change", onClientChange);      
+         
+      main(clients[0].ip); // start the program with first client
       </script>
-
    </body>
 </html>
