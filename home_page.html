@@ -189,8 +189,12 @@ body{
                const recieved_data = await raw_data.read(); //Obtain the actual bytes
                const message = recieved_data.value; 
                const line = new TextDecoder().decode(message); //convert bytes to string
-               const data = JSON.parse(line); //parse line into data as its own attributes. (Easier to access)
-
+               
+               // split by newline in case multiple JSON chunks arrive at once
+               const lines = line.split('\n').filter(l => l.trim() !== '');
+               if (lines.length === 0) continue; 
+               const data = JSON.parse(lines[lines.length - 1]); // take the latest one
+               
                stats.cpu = data.cpu; 
                stats.mem_available = data.mem_available; 
                stats.mem_total = data.mem_total; 
