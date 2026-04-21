@@ -46,7 +46,7 @@ int main()
         return 1;
     }
  
-    printf("Server running on port 5555\n"); // Ahron Local PC IP address.
+    printf("Server running on port 5555\n"); 
  
     //update: Handle mutiple clients
     fd_set master;
