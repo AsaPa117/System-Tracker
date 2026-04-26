@@ -181,7 +181,7 @@ body{
             net_recieved: 0
          }
 
-         current = null; 
+         let current = null; 
          async function main(ip){
             //stop the previous stream before starting a new one. (Prevent flickering when transition to a different pc)
             if (current){
@@ -191,9 +191,12 @@ body{
             
             const response = await fetch("http://"+ip+":5555/stats"); //asking rquest from server of client device ip through server port 5555
             const raw_data = response.body.getReader(); // .body is the raw data but getReader holds the actualy bytes of data
-            
+            current = raw_data; 
+
+
             while(true){
                const recieved_data = await raw_data.read(); //Obtain the actual bytes
+               if (recieved_data.done){ break};
                const message = recieved_data.value; 
                const line = new TextDecoder().decode(message); //convert bytes to string
                
