@@ -15,6 +15,8 @@
  
 time_t prev = 0;
 
+fd_set stats_clients; 
+
 int main() 
 {    
     //Base on GeeksForGeeks  
@@ -53,6 +55,7 @@ int main()
     fd_set read_fds;
     FD_ZERO(&master);
     FD_ZERO(&read_fds);
+    FD_ZERO(&stats_clients); 
     FD_SET(dev_server, &master);
     int fdmax = dev_server;
 
@@ -81,7 +84,7 @@ int main()
             int k = 0;
             while(k <= fdmax)
             {
-                if (FD_ISSET(k, &master) && k != dev_server)  
+                if (FD_ISSET(k, &stats_clients))  
                 {   
                     
                     if (send(k, buffer, strlen(buffer), 0) <= 0) 
@@ -89,11 +92,11 @@ int main()
                         printf("Client disconnected\n");
                         close(k);
                         FD_CLR(k, &master); // Remove from master set
+                        FD_CLR(k, &stats_clients); 
                     }
                 }
                 k++;
             }
-                //sleep(2);
         }
 
 
@@ -139,9 +142,24 @@ int main()
 
                 else
                 {
+                    if(FD_ISSET(k, &stats_clients))
+                    {
+                        close(k); 
+                        FD_CLR(k, &master); 
+                        FD_CLR(k, &stats_clients); 
+                        k++; 
+                        continue; 
+                    }
                     // (update) 5. read what the browser is requesting
-                    char request[1024];
-                    recv(k, request, sizeof(request), 0);
+                    char request[1024] = {0};
+                    int bytes = recv(k, request, sizeof(request), 0);
+                    if(bytes <= 0)
+                    {
+                        close(k); 
+                        FD_CLR(k, &master); 
+                        k++; 
+                        continue; 
+                    }
  
                     // (update) IF browser wants the HTML page — send home_page.html from disk
                     if (strstr(request, "GET / ")) 
@@ -179,12 +197,16 @@ int main()
                         // send http header once to client so it can accept the following data when sent
                         char http_header[] = "HTTP/1.1 200 OK\r\n" "Content-Type: application/json\r\n" "Access-Control-Allow-Origin: *\r\n\r\n";
                         send(k, http_header, strlen(http_header), 0);
+                        FD_SET(k, &stats_clients); 
+                    }
+
+                    else{
+                        close(k); 
+                        FD_CLR(k, &master); 
                     }
                 }
                 k++; 
             }
-            // close socket
-            //close(k);
         }
     }
  
