@@ -10,3 +10,5 @@ Design Choices and Trade-offs
 
 Challenges & Lessons Learned
 
+*Note
+A live demo presents laptop1 as the computer that's running the program. Laptop2 livestream and monitors laptop1 data. 
