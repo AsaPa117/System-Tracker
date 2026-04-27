@@ -16,5 +16,8 @@ Our dashboard is only design to fetch data to known ip address. It cant dynamica
 Challenge/Lesson 
 Setting up the two devices to communicate each other were difficult to do. Despite knowing the ips of each device and being connected to the same public wifi router, it would not send any communication. After learning the lecture on network, we concluded that the router may had proxy that keep device from communicating and knowing each other ip. To combat that, we used mobile hotspot for communication and assigning ip. It turns out mobile hotspot has no proxy nor restriction that keep device from communicating. 
 
+Another challenge we face, after we fixed the freezing, was that nothing was displaying in the browser. There was an issue with ProcReadStat where in our calculation to find cpu percentage, it was returning an error. Apparently there wasn't a delay in which the program couldn't read two seperate data from our computer system. It just use the same information twice and the math to find cpu percentage ends up trying to divide by zero. That causes it to return unexpected result and the program couldn't convert it into JSON format causing it to throw invalid data to the server. So instead of using sleep() to delay since it would delay the entire program, I use variables to keep track of the calculation and return a valid result. 
+
+
 *Note
 A live demo presents laptop1 as the computer that's running the program. Laptop2 livestream and monitors laptop1 data. 
